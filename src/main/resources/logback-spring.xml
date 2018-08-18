@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    org/springframework/boot/logging/logback/base.xml をもとに一部修正
+    https://github.com/spring-projects/spring-boot/blob/2.0.x/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback/base.xml
+-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- レイアウトでタイムスタンプをUTCに変更し、末尾にZを付与する -->
+    <property name="CONSOLE_LOG_PATTERN" value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}, UTC}Z){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+    <property name="FILE_LOG_PATTERN" value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}, UTC}Z ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+
+    <!--
+        LOG_FILE のデフォルトを log/application.log にする（logging.file で上書可）
+        ${LOG_FILE:-${LOG_PATH:-log}/application.log} にして logging.file および logging.path の両方を利用したいのだが、
+        logging.path が指定されると内部的に LOG_FILE = ${logging.path}/spring.log がシステムプロパティに登録されるので期待した動きにならない。
+
+        例えば logging.file = app.log の場合は LOG_FILE = app.log としてシステムプロパティに追加されるが、
+        logging.path = log の場合は LOG_PATH = log と LOG_FILE = log/spring.log として追加される。
+
+        logging.path を指定した場合は常に LOG_FILE が存在するので、「LOG_FILE が存在しない場合は LOG_PATH を見る」という想定は起こりえない
+    -->
+    <property name="LOG_FILE" value="${LOG_FILE:-log/application.log}" />
+
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
