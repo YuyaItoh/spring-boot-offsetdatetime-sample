@@ -23,12 +23,6 @@ repositories {
     mavenCentral()
 }
 
-bootJar {
-    manifest {
-        attributes("Implementation-Version": version)
-    }
-}
-
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
