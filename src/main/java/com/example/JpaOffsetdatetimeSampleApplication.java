@@ -23,11 +23,20 @@ public class JpaOffsetdatetimeSampleApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Customer customer = new Customer("alice", "alice@example.com", OffsetDateTime.of(2018, 7, 10, 12, 0, 0, 0, ZoneOffset.ofHours(9)));
-        System.out.println(customer);
-        customerRepository.saveAndFlush(customer);
+        Customer beforeCustomer = new Customer("alice", "alice@example.com", OffsetDateTime.of(2018, 7, 10, 12, 0, 0, 0, ZoneOffset.ofHours(5)));
+        showCustomer(beforeCustomer);
 
-        customer = customerRepository.findById("alice").get();
-        System.out.println(customer);
+        customerRepository.saveAndFlush(beforeCustomer);
+
+        Customer afterCustomer = customerRepository.findById("alice").get();
+        showCustomer(afterCustomer);
+    }
+
+    private void showCustomer(Customer customer) {
+        System.out.println("---------------------");
+        System.out.println("登録日:\t" + customer.getRegisteredDateTime());
+        System.out.println("作成日:\t" + customer.getCreateDateTime());
+        System.out.println("更新日:\t" + customer.getUpdateDateTime());
+        System.out.println("---------------------");
     }
 }
